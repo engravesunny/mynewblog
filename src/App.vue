@@ -1,25 +1,25 @@
 <template>
-  <div>
-    
+  <div id="app">
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'MyblogApp',
+  name: 'blog-app',
 
   data() {
     return {
-      
+
     };
   },
 
   mounted() {
-    
+
   },
 
   methods: {
-    
+
   },
 };
 </script>
