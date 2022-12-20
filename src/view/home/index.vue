@@ -121,7 +121,7 @@
                     <el-card v-if="showCategory" style="background:rgba(255, 255, 255, 0.5);width:99%;border-radius:30px;margin-bottom:15px">
                         <div class="category-container">
                             <div v-for="(item,index) in category" :key="index" style="text-align:center">
-                                <div @click="$router.push('/category')" class="category-card" :style="{backgroundColor:`${color[Math.floor(Math.random()*7)]}`}" >
+                                <div @click="toCategory(item)" class="category-card" :style="{backgroundColor:`${color[Math.floor(Math.random()*7)]}`}" >
                                     {{ item }} 
                                 </div>
                             </div>
@@ -130,8 +130,8 @@
                     <!-- 标签页 -->
                     <el-card v-else style="background:rgba(255, 255, 255, 0.5);width:99%;border-radius:30px;margin-bottom:15px">
                         <div class="tags_box">
-                            <div @click="$router.push('/tags')" class="tags_item" v-for="(item,index) in tagsList" :key="index">
-                                <div class="tags_text" :style="{fontSize:`${(1+tagsNumList.filter(tag=>tag===item).length/5)*20}px`,color:`${textColor[Math.floor(Math.random()*7)]}`}">
+                            <div class="tags_item" v-for="(item,index) in tagsList" :key="index">
+                                <div class="tags_text" @click="toTags(item)"  :style="{fontSize:`${(1+tagsNumList.filter(tag=>tag===item).length/5)*20}px`,color:`${textColor[Math.floor(Math.random()*7)]}`}">
                                     {{item}}
                                     <div class="num">
                                         {{tagsNumList.filter(tag=>tag===item).length}}
@@ -166,6 +166,7 @@
 <script>
 import postInfo from '@/assets/post/postInfo';
 import articleCard from '@/components/articleCard'
+import PubSub from 'pubsub-js';
 export default {
     name: 'blog-home',
     components: {
@@ -248,7 +249,14 @@ export default {
     },
 
     methods: {
-
+        toCategory(item){
+            this.$router.push('/category')
+            PubSub.publish('toCategory',item)
+        },
+        toTags(item){
+            this.$router.push('/tags')
+            PubSub.publish('toTags',item)
+        }
     },
 
 };
@@ -296,7 +304,7 @@ export default {
 }
 .category-container{
     display: flex;
-    justify-content: start;
+    justify-content: flex-start;
     align-items: center;
     width: 40vw;
 }

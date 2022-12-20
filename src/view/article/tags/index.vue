@@ -32,6 +32,7 @@
 </template>
 
 <script>
+import PubSub from 'pubsub-js'
 import postInfo from '@/assets/post/postInfo';
 import tagsItem from './components/tagsItem.vue';
 export default {
@@ -68,7 +69,9 @@ export default {
         // console.log(this.tagsList);
     },
     mounted() {
-        
+        PubSub.subscribe('toTags',(a,item)=>{
+            this.toTags(item)
+        })
     },
 
     methods: {

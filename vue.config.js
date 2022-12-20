@@ -1,15 +1,6 @@
 // const { defineConfig } = require('@vue/cli-service')
 module.exports = {
   publicPath: './',
-  devServer: {
-    proxy: {
-        '/api': {
-        target: 'http://10.4.24.12:8080',
-        changeOrigin: true
-          // 路径重写
-      },
-    }
-  },
   chainWebpack: config => {
     config.module
       .rule('md')

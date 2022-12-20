@@ -61,7 +61,7 @@
 </template>
 
 <script>
-import { register,sendCode,Pin,login } from '@/api/login';
+// import { register,sendCode,Pin,login } from '@/api/login';
 // 
 export default {
     name: 'LoginBlog',
@@ -111,35 +111,35 @@ export default {
 
     methods: {
         async signIn(){
-            if(this.isLogin === true) {
-                const data = await login(this.loginForm)
-                console.log(data);
-            } else {
-                this.isLogin = true
-            }
+            // if(this.isLogin === true) {
+            //     const data = await login(this.loginForm)
+            //     console.log(data);
+            // } else {
+            //     this.isLogin = true
+            // }
         },
         signUp(){
-            if(this.isLogin === false) {
-                this.$refs.loginForm.validate(async isOK => {
-                    if(isOK) {
-                        const data = await register(this.signForm)
-                        if(data.code) {
-                            this.$message.success('注册成功')
-                            this.isLogin = true
-                        } else {
-                            this.$message.warning(data.message)
-                        }
-                    }
-                })
-            } else {
-                this.isLogin = false
-            }
+            // if(this.isLogin === false) {
+            //     this.$refs.loginForm.validate(async isOK => {
+            //         if(isOK) {
+            //             const data = await register(this.signForm)
+            //             if(data.code) {
+            //                 this.$message.success('注册成功')
+            //                 this.isLogin = true
+            //             } else {
+            //                 this.$message.warning(data.message)
+            //             }
+            //         }
+            //     })
+            // } else {
+            //     this.isLogin = false
+            // }
         },
         async sendCode(){
-            await sendCode({email:this.signForm.email})
+            // await sendCode({email:this.signForm.email})
         },
         async pin(){
-            await Pin()
+            // await Pin()
         }
     },
 };

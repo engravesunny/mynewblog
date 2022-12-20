@@ -6,7 +6,8 @@ const postInfo = {
         '项目总结',
         '自主学习',
         '日常笔记',
-        '生活趣事'
+        '生活趣事',
+        'Vue3'
     ],
     // name为category，取为name是为了方便雷达图
     categoryRadar:[
@@ -52,6 +53,9 @@ const postInfo = {
         { postName:'项目打包与优化', name:'项目总结', tags:['项目优化'],date:'2022-11-05 21:22:22' },
         { postName:'优化设置Token', name:'项目总结', tags:['token'],date:'2022-11-05 21:22:22' },
         { postName:'在node.js中应用项目并代理跨域', name:'项目总结', tags:['部署项目'],date:'2022-11-05 21:22:22' },
+        { postName:'vue3组合式API笔记', name:'Vue3',tags:['Vue3','组合式API','笔记'], date:'2022-11-29 0:30:11'},
+        { postName:'form表单和模板引擎', name:'自主学习',tags:['前后端交互','form表单','笔记'], date:'2022-8-29 0:30:11'},
+        { postName:'Ajax', name:'自主学习',tags:['前后端交互','Ajax','笔记'], date:'2022-8-30 11:32:11'}
 
     ]
 }

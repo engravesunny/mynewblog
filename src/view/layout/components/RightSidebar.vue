@@ -153,6 +153,7 @@
                 <el-card style="width:99%;border-radius:30px;margin-bottom:15px" body-style="padding-left:8px">
                     <my-notice></my-notice>
                 </el-card>
+
             </el-card>
         </el-card>
     </el-col>

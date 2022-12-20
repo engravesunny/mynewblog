@@ -10,7 +10,7 @@
 
 <script>
 import noticeItem from '@/view/layout/components/notice/components/noticeItem'
-import { login } from '@/api/login'
+// import { login } from '@/api/login'
 export default {
     name: 'MyNotice',
     components:{
@@ -27,12 +27,12 @@ export default {
     },
 
     methods: {
-        async login(){
-            await login({
-                username:this.text,
-                password:this.password
-            })
-        }
+        // async login(){
+        //     await login({
+        //         username:this.text,
+        //         password:this.password
+        //     })
+        // }
     },
 };
 </script>

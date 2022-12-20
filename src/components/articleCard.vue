@@ -13,13 +13,13 @@
                 <div class="date"><i class="el-icon-time"></i> {{ date }}</div>
             </div>
             <div class="right">
-                <div class="category-name" @click.stop="toCategory" >{{ ar_category }}</div>
+                <div class="category-name" @click.stop="toCategory(ar_category)" >{{ ar_category }}</div>
             </div>
         </div>
         <hr/>
         <div class="tags" @click.stop="toTags">
             <div class="tags-container" v-for="(item,index) in ar_tags" :key="index" >
-                <div class="tags-text">{{ item }}</div>
+                <div class="tags-text" @click.stop="toTags(item)">{{ item }}</div>
             </div>
         </div>
     </div>
@@ -27,6 +27,7 @@
 </template>
 
 <script>
+import PubSub from 'pubsub-js';
 const files = require.context('@/assets/img/post-img')
 export default {
     name: 'ArticleCard',
@@ -80,11 +81,13 @@ export default {
         toArticle(){
             this.$router.push({name:'article',query:{name:`${this.ar_title}`}})
         },
-        toCategory(){
-
+        toCategory(item){
+            this.$router.push('/category')
+            PubSub.publish('toCategory',item)
         },
-        toTags(){
-
+        toTags(item){
+            this.$router.push('/tags')
+            PubSub.publish('toTags',item)
         }
     },
 };

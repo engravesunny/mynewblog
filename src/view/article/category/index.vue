@@ -27,6 +27,7 @@
 
 <script>
 import postInfo from '@/assets/post/postInfo'
+import PubSub from 'pubsub-js'
 import radarBlog from '@/components/radarBlog'
 import categoryItem from './components/categoryItem.vue';
 export default {
@@ -50,6 +51,9 @@ export default {
     },
     mounted() {
         console.log(postInfo.categories);
+        PubSub.subscribe('toCategory',(a,item)=>{
+            this.toCategory(item)
+        })
     },
 
     methods: {
@@ -77,7 +81,7 @@ export default {
 }
 .category-container{
     display: flex;
-    justify-content: start;
+    justify-content: flex-start;
     align-items: center;
     width: 40vw;
 }

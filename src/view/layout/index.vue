@@ -12,7 +12,7 @@
                         <el-image :src="logoSrc" fit="contain" style="display:block;width:50px;height:50px" ></el-image>
                     </el-col>
                     <el-col style="width:300px" >
-                        <span style="font-weight:800;font-size:larger" >刻猫猫的笔记本</span>
+                        <span style="font-weight:800;font-size:larger;cursor:pointer" @click="$router.push('/home')" >刻猫猫的笔记本</span>
                     </el-col>
                 </el-row>
                 <el-row type="flex" justify="end"> 
