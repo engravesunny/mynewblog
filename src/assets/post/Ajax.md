@@ -206,3 +206,352 @@ var json = JSON.stringify({a: 'Hello', b: 'World'})
 
 - 把数据对象转换为字符串的过程，叫做序列化，例如：调用 JSON.stringify() 函数的操作，叫做 JSON 序列化。
 - 把字符串转换为数据对象的过程，叫做反序列化，例如：调用 JSON.parse() 函数的操作，叫做 JSON 反序列化。
+
+&nbsp;
+
+## 3.封装Ajax函数
+
+### 3.1.要实现的效果
+
+```html
+<!-- 1. 导入自定义的ajax函数库 -->
+<script src="./itheima.js"></script>
+
+<script>
+    // 2. 调用自定义的 itheima 函数，发起 Ajax 数据请求
+    itheima({
+        method: '请求类型',
+        url: '请求地址',
+        data: { /* 请求参数对象 */ },
+        success: function(res) { // 成功的回调函数
+            console.log(res)     // 打印数据
+        }
+    })
+</script>
+```
+
+### 3.2.定义options参数
+
+itheima() 函数是我们自定义的 Ajax 函数，它接收一个配置对象作为参数，配置对象中可以配置如下属性：
+
+- method   请求的类型
+- url      请求的 URL 地址
+- data     请求携带的数据
+- success  请求成功之后的回调函数
+
+### 3.3 处理data参数
+
+需要把 data 对象，转化成查询字符串的格式，从而提交给服务器，因此提前定义 resolveData 函数如下：
+
+```js
+/**
+ * 处理 data 参数
+ * @param {data} 需要发送到服务器的数据
+ * @returns {string} 返回拼接好的查询字符串 name=zs&age=10
+ */
+function resolveData(data) {
+  var arr = []
+  for (var k in data) {
+    arr.push(k + '=' + data[k])
+  }
+  return arr.join('&')
+}
+```
+
+### 3.4 定义itheima函数
+
+在 itheima() 函数中，需要创建 xhr 对象，并监听 onreadystatechange 事件：
+
+```js
+function itheima(options) {
+  var xhr = new XMLHttpRequest()
+  // 拼接查询字符串
+  var qs = resolveData(options.data)
+
+  // 监听请求状态改变的事件
+  xhr.onreadystatechange = function() {
+    if (xhr.readyState === 4 && xhr.status === 200) {
+      var result = JSON.parse(xhr.responseText)
+      options.success(result)
+    }
+  }
+}
+```
+
+### 3.5 判断请求的类型
+
+不同的请求类型，对应 xhr 对象的不同操作，因此需要对请求类型进行 if … else … 的判断：
+
+```js
+if (options.method.toUpperCase() === 'GET') {
+    // 发起 GET 请求
+    xhr.open(options.method, options.url + '?' + qs)
+    xhr.send()
+  } else if (options.method.toUpperCase() === 'POST') {
+    // 发起 POST 请求
+    xhr.open(options.method, options.url)
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
+    xhr.send(qs)
+  }
+```
+
+## 4.XMLHttpRequest Level2的新特性
+
+### 4.1 认识XMLHttpRequest Level2
+
+1.旧版XMLHttpRequest的缺点
+
+- 只支持文本数据的传输，无法用来读取和上传文件
+- 传送和接收数据时，没有进度信息，只能提示有没有完成
+
+2.XMLHttpRequest Level2的新功能
+
+- 可以设置 HTTP 请求的时限
+- 可以使用 FormData 对象管理表单数据
+- 可以上传文件
+- 可以获得数据传输的进度信息
+
+### 4.2 设置HTTP请求时限
+
+有时，Ajax 操作很耗时，而且无法预知要花多少时间。如果网速很慢，用户可能要等很久。新版本的 XMLHttpRequest 对象，增加了 timeout 属性，可以设置 HTTP 请求的时限：
+
+```js
+ xhr.timeout = 3000
+```
+
+上面的语句，将最长等待时间设为 3000 毫秒。过了这个时限，就自动停止HTTP请求。与之配套的还有一个 timeout 事件，用来指定回调函数：
+
+```js
+xhr.ontimeout = function(event){
+     alert('请求超时！')
+}
+```
+
+### 4.3 FormData对象管理表单数据
+
+Ajax 操作往往用来提交表单数据。为了方便表单处理，HTML5 新增了一个 FormData 对象，可以模拟表单操作：
+
+```js
+// 1. 新建 FormData 对象
+      var fd = new FormData()
+      // 2. 为 FormData 添加表单项
+      fd.append('uname', 'zs')
+      fd.append('upwd', '123456')
+      // 3. 创建 XHR 对象
+      var xhr = new XMLHttpRequest()
+      // 4. 指定请求类型与URL地址
+      xhr.open('POST', 'http://www.liulongbin.top:3006/api/formdata')
+      // 5. 直接提交 FormData 对象，这与提交网页表单的效果，完全一样
+      xhr.send(fd)
+```
+
+FormData对象也可以用来获取网页表单的值，示例代码如下：
+
+```js
+// 获取表单元素
+ var form = document.querySelector('#form1')
+ // 监听表单元素的 submit 事件
+ form.addEventListener('submit', function(e) {
+    e.preventDefault()
+     // 根据 form 表单创建 FormData 对象，会自动将表单数据填充到 FormData 对象中
+     var fd = new FormData(form)
+     var xhr = new XMLHttpRequest()
+     xhr.open('POST', 'http://www.liulongbin.top:3006/api/formdata')
+     xhr.send(fd)
+     xhr.onreadystatechange = function() {}
+})
+```
+
+### 4.4 上传文件
+
+新版 XMLHttpRequest 对象，不仅可以发送文本信息，还可以上传文件。
+
+&nbsp;
+
+实现步骤：
+
+- 定义 UI 结构
+- 验证是否选择了文件
+- 向 FormData 中追加文件
+- 使用 xhr 发起上传文件的请求
+- 监听 onreadystatechange 事件
+
+1.定义UI结构
+
+```html
+<!-- 1. 文件选择框 -->
+    <input type="file" id="file1" />
+    <!-- 2. 上传按钮 -->
+    <button id="btnUpload">上传文件</button>
+    <br />
+    <!-- 3. 显示上传到服务器上的图片 -->
+    <img src="" alt="" id="img" width="800" />
+```
+
+2.验证是否选择了文件
+
+```js
+// 1. 获取上传文件的按钮
+ var btnUpload = document.querySelector('#btnUpload')
+ // 2. 为按钮添加 click 事件监听
+ btnUpload.addEventListener('click', function() {
+     // 3. 获取到选择的文件列表
+     var files = document.querySelector('#file1').files
+     if (files.length <= 0) {
+         return alert('请选择要上传的文件！')
+     }
+     // ...后续业务逻辑
+ })
+```
+
+3.向FormData中追加文件
+
+```js
+ // 1. 创建 FormData 对象
+ var fd = new FormData()
+ // 2. 向 FormData 中追加文件
+ fd.append('avatar', files[0])
+```
+
+4.使用 xhr 发起上传文件的请求
+
+```js
+ // 1. 创建 xhr 对象
+ var xhr = new XMLHttpRequest()
+ // 2. 调用 open 函数，指定请求类型与URL地址。其中，请求类型必须为 POST
+ xhr.open('POST', 'http://www.liulongbin.top:3006/api/upload/avatar')
+ // 3. 发起请求
+ xhr.send(fd)
+```
+
+5.监听onreadystatechange事件
+
+```js
+xhr.onreadystatechange = function() {
+  if (xhr.readyState === 4 && xhr.status === 200) {
+    var data = JSON.parse(xhr.responseText)
+    if (data.status === 200) { // 上传文件成功
+      // 将服务器返回的图片地址，设置为 <img> 标签的 src 属性
+      document.querySelector('#img').src = 'http://www.liulongbin.top:3006' + data.url
+    } else { // 上传文件失败
+      console.log(data.message)
+    }
+  }
+}
+```
+
+### 4.5 显示文件上传进度
+
+新版本的 XMLHttpRequest 对象中，可以通过监听 xhr.upload.onprogress 事件，来获取到文件的上传进度。语法格式如下：
+
+```js
+// 创建 XHR 对象
+ var xhr = new XMLHttpRequest()
+ // 监听 xhr.upload 的 onprogress 事件
+ xhr.upload.onprogress = function(e) {
+    // e.lengthComputable 是一个布尔值，表示当前上传的资源是否具有可计算的长度
+    if (e.lengthComputable) {
+        // e.loaded 已传输的字节
+        // e.total  需传输的总字节
+        var percentComplete = Math.ceil((e.loaded / e.total) * 100)
+    }
+}
+```
+
+## 5.axios
+
+### 5.1 什么是axios
+
+axios是专注于网络数据请求的库
+
+相比于XMLHttpRequest，axios更加简洁易用
+
+相比于jQuery，axios更轻量化，专注于网络数据请求
+
+### 5.2 axios发起GET请求
+
+axios 发起 get 请求的语法：
+
+```js
+ axios.get('url', { params: { /*参数*/ } }).then(callback)
+```
+
+具体的请求示例如下：
+
+```js
+ // 请求的 URL 地址
+ var url = 'http://www.liulongbin.top:3006/api/get'
+ // 请求的参数对象
+ var paramsObj = { name: 'zs', age: 20 }
+ // 调用 axios.get() 发起 GET 请求
+axios.get(url, { params: paramsObj }).then(res=>{
+    const result = res.data
+    console.log(result)
+})
+```
+
+### 5.3 axios发起POST请求
+
+axios 发起 post 请求的语法：
+
+```js
+axios.post('url', { /*参数*/ }).then(callback)
+```
+
+具体的请求示例如下：
+
+```js
+// 请求的 URL 地址
+ var url = 'http://www.liulongbin.top:3006/api/post'
+ // 要提交到服务器的数据
+ var dataObj = { location: '北京', address: '顺义' }
+ // 调用 axios.post() 发起 POST 请求
+ axios.post(url, dataObj).then(res => {
+     // res.data 是服务器返回的数据
+     var result = res.data
+     console.log(result)
+ })
+```
+
+### 6.4 直接使用axios发起请求
+
+axios 也提供了类似于 jQuery 中 $.ajax() 的函数，语法如下：
+
+```js
+ axios({
+     method: '请求类型',
+     url: '请求的URL地址',
+     data: { /* POST数据 */ },
+     params: { /* GET参数 */ }
+ }) .then(callback)
+```
+
+直接使用axios发起GET请求
+
+```js
+axios({
+     method: 'GET',
+     url: 'http://www.liulongbin.top:3006/api/get',
+     params: { // GET 参数要通过 params 属性提供
+         name: 'zs',
+         age: 20
+     }
+ }).then(function(res) {
+     console.log(res.data)
+ })
+```
+
+直接使用axios发起POST请求
+
+```js
+axios({
+     method: 'POST',
+     url: 'http://www.liulongbin.top:3006/api/post',
+     data: { // POST 数据要通过 data 属性提供
+         bookname: '程序员的自我修养',
+         price: 666
+     }
+ }).then(function(res) {
+     console.log(res.data)
+ })
+```

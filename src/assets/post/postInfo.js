@@ -55,7 +55,9 @@ const postInfo = {
         { postName:'在node.js中应用项目并代理跨域', name:'项目总结', tags:['部署项目'],date:'2022-11-05 21:22:22' },
         { postName:'vue3组合式API笔记', name:'Vue3',tags:['Vue3','组合式API','笔记'], date:'2022-11-29 0:30:11'},
         { postName:'form表单和模板引擎', name:'自主学习',tags:['前后端交互','form表单','笔记'], date:'2022-8-29 0:30:11'},
-        { postName:'Ajax', name:'自主学习',tags:['前后端交互','Ajax','笔记'], date:'2022-8-30 11:32:11'}
+        { postName:'Ajax', name:'自主学习',tags:['前后端交互','Ajax','笔记'], date:'2022-8-30 11:32:11'},
+        { postName:'防抖与节流', name:'自主学习',tags:['优化','笔记'], date:'2022-8-30 12:32:11'},
+        { postName:'跨域与JSONP', name:'自主学习',tags:['前后端交互','跨域','笔记'], date:'2022-8-29 9:32:11'}
 
     ]
 }
